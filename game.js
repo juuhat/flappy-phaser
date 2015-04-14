@@ -38,7 +38,7 @@ function create() {
 
 	//init pipes group and add timer to add new pipes periodically
 	pipes = game.add.group();
-	game.time.events.loop(4000, addPipe);
+	game.time.events.loop(4000, addPipes);
 
 	//init score and text showing it
 	score = 0;
@@ -47,7 +47,7 @@ function create() {
 	});
 
 	//add one pipe group for game start
-	addPipe();
+	addPipes();
 }
 
 //Called 60 times per second, update game logic here
@@ -61,6 +61,7 @@ function update() {
 		die();
 	}
 
+	//loop through pipes to see if player has passed one
 	pipes.forEach(function(p) {
 		if (p.x + 50 <= player.x && p.hasScored == false) {
 			p.hasScored = true;
@@ -81,19 +82,19 @@ function die() {
 }
 
 //generate random hole position and create new pair of pipes
-function addPipe() {
-	var pipeHolePosition = game.rnd.between(50, 430 - holeSize);
-	createPipeGroup(pipeHolePosition);
-}
+function addPipes(pipeHolePosition) {
 
-//create two pipes
-function createPipeGroup(pipeHolePosition) {
+	//generate random position for hole
+	var pipeHolePosition = game.rnd.between(50, 430 - holeSize);
+
+	//create upper pipe, notice hasScored attribute which will be needed with scoring
 	var upperPipe = game.add.sprite(320, pipeHolePosition - 480, "pipe");
 	upperPipe.hasScored = false;
 	game.physics.arcade.enable(upperPipe, Phaser.Physics.Arcade);
 	upperPipe.body.velocity.x = -pipeSpeed;
 	pipes.add(upperPipe);
 
+	//create lower pipe
 	var lowerPipe = game.add.sprite(320, pipeHolePosition + holeSize, "pipe");
 	game.physics.arcade.enable(lowerPipe, Phaser.Physics.Arcade);
 	lowerPipe.body.velocity.x = -pipeSpeed;
